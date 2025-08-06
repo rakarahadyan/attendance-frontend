@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import Header from '../components/common/Header';
 import Sidebar from '../components/common/Sidebar';
+import { Outlet } from 'react-router-dom';
 
 // MainLayout Component
 const MainLayout = ({ children }) => {
@@ -40,7 +41,7 @@ const MainLayout = ({ children }) => {
 
           {/* Page content */}
           <main className="flex-1 overflow-auto p-6">
-            {children}
+            <Outlet />
           </main>
         </div>
       </div>

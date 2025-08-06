@@ -1,23 +1,43 @@
-import { useState } from 'react';
-import { 
-  Menu, 
-  X, 
-  Home, 
-  Users, 
-  Building2, 
-  Clock, 
-  BarChart3, 
-  Settings, 
-  LogOut, 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Menu,
+  X,
+  Home,
+  Users,
+  Building2,
+  Clock,
+  BarChart3,
+  Settings,
+  LogOut,
   User,
   Bell,
   Search,
-  ChevronDown
-} from 'lucide-react';
+  ChevronDown,
+} from "lucide-react";
 
 // Header Component
-const Header = ({ onMenuClick, user = { name: 'John Doe', role: 'Admin' } }) => {
+const Header = ({
+  onMenuClick,
+  user = { name: "John Doe", role: "Admin" },
+}) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+
+    // 1. Hapus token dari localStorage/sessionStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    // 2. Jika perlu, panggil endpoint logout (opsional)
+    // axios.post('/api/auth/logout').catch(err => console.error(err));
+
+    // 3. Redirect ke halaman login
+    navigate("/");
+    setShowUserMenu(false);
+  };
 
   return (
     <header className="bg-gray-900 border-b border-gray-700 px-4 py-3">
@@ -30,10 +50,13 @@ const Header = ({ onMenuClick, user = { name: 'John Doe', role: 'Admin' } }) => 
           >
             <Menu size={20} />
           </button>
-          
+
           <div className="hidden sm:flex items-center space-x-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={16}
+              />
               <input
                 type="text"
                 placeholder="Search..."
@@ -71,16 +94,26 @@ const Header = ({ onMenuClick, user = { name: 'John Doe', role: 'Admin' } }) => 
 
             {showUserMenu && (
               <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded-lg shadow-lg py-1 z-50">
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
+                <a
+                  href="#"
+                  className="flex items-center px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
+                >
                   <User size={16} className="mr-3" />
                   Profile
                 </a>
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
+                <a
+                  href="#"
+                  className="flex items-center px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
+                >
                   <Settings size={16} className="mr-3" />
                   Settings
                 </a>
                 <hr className="border-gray-700 my-1" />
-                <a href="#" className="flex items-center px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-gray-700 transition-colors">
+                <a
+                  href="#"
+                  onClick={handleLogout}
+                  className="flex items-center px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-gray-700 transition-colors"
+                >
                   <LogOut size={16} className="mr-3" />
                   Logout
                 </a>
@@ -90,37 +123,6 @@ const Header = ({ onMenuClick, user = { name: 'John Doe', role: 'Admin' } }) => 
         </div>
       </div>
     </header>
-  );
-};
-
-// MainLayout Component
-const MainLayout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      <div className="flex h-screen">
-        {/* Sidebar */}
-        <Sidebar 
-          isOpen={sidebarOpen} 
-          onClose={() => setSidebarOpen(false)} 
-        />
-
-        {/* Main content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Header */}
-          <Header 
-            onMenuClick={() => setSidebarOpen(true)}
-            user={{ name: 'John Doe', role: 'Administrator' }}
-          />
-
-          {/* Page content */}
-          <main className="flex-1 overflow-auto p-6">
-            {children}
-          </main>
-        </div>
-      </div>
-    </div>
   );
 };
 

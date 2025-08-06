@@ -82,7 +82,10 @@ const Sidebar = ({ isOpen, onClose }) => {
               return (
                 <button
                   key={item.id}
-                  onClick={() => navigate(item.href) && setActiveMenu(item.id)}
+                  onClick={() => {
+                    setActiveMenu(item.id);
+                    navigate(item.href);
+                  }}
                   className={`
                     w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-colors
                     ${

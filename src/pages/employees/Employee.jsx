@@ -531,7 +531,7 @@ const EmployeeList = () => {
   };
 
   return (
-    <div className="min-h-screen min-w-full space-y-6 p-6 " style={{ width: "100%" }} >
+    <div className="space-y-6 ">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

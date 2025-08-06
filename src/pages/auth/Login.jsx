@@ -117,7 +117,7 @@ const LoginForm = () => {
         .then((response) => {
           // Handle successful login
           localStorage.setItem("token", response.data.token);
-          localStorage.setItem("user", JSON.stringify(response.data.user));
+          localStorage.setItem("user", JSON.stringify(response.data.data.user));
           setFormData({ email: "", password: "" });
           setErrors({});
           // Redirect to dashboard

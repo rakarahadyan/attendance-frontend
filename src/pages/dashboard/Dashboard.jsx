@@ -133,271 +133,314 @@ const EmployeeDashboard = () => {
     clockInTime: null,
     onBreak: false,
     breakStartTime: null,
-    totalHours: '0:00',
-    totalBreakTime: '0:00'
+    totalHours: '0:00'
   });
 
-  const [activities, setActivities] = useState([
-    {
-      type: 'clock-in',
-      message: 'Andi Pratama clocked in',
-      time: '08:00 AM'
-    },
-    {
-      type: 'break',
-      message: 'Sari Indah started break',
-      time: '10:15 AM'
-    },
-    {
-      type: 'clock-out',
-      message: 'Budi Santoso clocked out',
-      time: '17:30 PM'
-    }
-  ]);
-
-  const [workTime, setWorkTime] = useState('0:00:00');
-
-  // Calculate work time
-  useEffect(() => {
-    let interval;
-    if (attendance.clockedIn && !attendance.onBreak) {
-      interval = setInterval(() => {
-        if (attendance.clockInTime) {
-          const now = new Date();
-          const diff = now - attendance.clockInTime;
-          const hours = Math.floor(diff / (1000 * 60 * 60));
-          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-          setWorkTime(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
-        }
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [attendance.clockedIn, attendance.onBreak, attendance.clockInTime]);
-
   const handleClockIn = () => {
-    const now = new Date();
     setAttendance(prev => ({
       ...prev,
       clockedIn: true,
-      clockInTime: now
+      clockInTime: new Date().toLocaleTimeString('en-US', { hour12: false })
     }));
-    
-    setActivities(prev => [{
-      type: 'clock-in',
-      message: 'You clocked in',
-      time: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-    }, ...prev]);
   };
 
   const handleClockOut = () => {
-    const now = new Date();
     setAttendance(prev => ({
       ...prev,
       clockedIn: false,
-      clockInTime: null,
       onBreak: false,
-      breakStartTime: null
+      clockInTime: null,
+      breakStartTime: null,
+      totalHours: '8:30'
     }));
-    
-    setActivities(prev => [{
-      type: 'clock-out',
-      message: 'You clocked out',
-      time: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-    }, ...prev]);
-    
-    setWorkTime('0:00:00');
   };
 
   const handleBreakToggle = () => {
-    const now = new Date();
     setAttendance(prev => ({
       ...prev,
       onBreak: !prev.onBreak,
-      breakStartTime: !prev.onBreak ? now : null
+      breakStartTime: !prev.onBreak ? new Date().toLocaleTimeString('en-US', { hour12: false }) : null
     }));
-    
-    setActivities(prev => [{
-      type: 'break',
-      message: attendance.onBreak ? 'You ended break' : 'You started break',
-      time: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-    }, ...prev]);
   };
 
-  const stats = [
-    {
-      icon: Clock,
-      title: 'Work Hours Today',
-      value: workTime,
-      subtitle: 'Current session',
-      color: 'blue',
-      trend: { positive: true, value: '+2.5h from yesterday' }
+  const employeeStats = [
+    { 
+      icon: Clock, 
+      title: 'Today\'s Hours', 
+      value: attendance.clockedIn ? '4:30' : '0:00', 
+      subtitle: 'Working time',
+      color: 'blue'
     },
-    {
-      icon: Calendar,
-      title: 'This Week',
-      value: '32.5h',
-      subtitle: 'Total work hours',
+    { 
+      icon: Calendar, 
+      title: 'This Month', 
+      value: '168h', 
+      subtitle: 'Total hours',
       color: 'green',
-      trend: { positive: true, value: '+5.2h from last week' }
+      trend: { positive: true, value: '+5%' }
     },
-    {
-      icon: Coffee,
-      title: 'Break Time',
-      value: '45m',
-      subtitle: 'Today\'s breaks',
-      color: 'yellow',
-      trend: { positive: false, value: '+10m from average' }
+    { 
+      icon: Coffee, 
+      title: 'Break Time', 
+      value: '45m', 
+      subtitle: 'Today',
+      color: 'yellow'
     },
-    {
-      icon: TrendingUp,
-      title: 'Productivity',
-      value: '94%',
-      subtitle: 'This week',
+    { 
+      icon: TrendingUp, 
+      title: 'Attendance', 
+      value: '96%', 
+      subtitle: 'This month',
       color: 'purple',
-      trend: { positive: true, value: '+3% from last week' }
+      trend: { positive: true, value: '+2%' }
     }
   ];
 
+  const recentActivities = [
+    { type: 'clock-in', message: 'Clocked in', time: '2 hours ago' },
+    { type: 'break', message: 'Started lunch break', time: '30 minutes ago' },
+    { type: 'break', message: 'Ended lunch break', time: '15 minutes ago' },
+    { type: 'other', message: 'Updated profile information', time: 'Yesterday' },
+    { type: 'clock-out', message: 'Clocked out', time: 'Yesterday at 5:30 PM' }
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-800 text-white">
+    <div className="space-y-6">
       {/* Header */}
-      {/* <div className="bg-gray-900 border-b border-gray-700 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Building2 className="text-blue-400" size={32} />
-            <div>
-              <h1 className="text-2xl font-bold">AttendanceApp</h1>
-              <p className="text-gray-400">Employee Dashboard</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="text-right">
-              <p className="text-sm text-gray-400">Welcome back,</p>
-              <p className="font-semibold">John Doe</p>
-            </div>
-            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-              <User size={20} />
-            </div>
-          </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Welcome back, John!</h1>
+          <p className="text-gray-400">Here's your attendance overview for today</p>
         </div>
-      </div> */}
+        <div className="flex items-center space-x-2">
+          <div className={`
+            w-3 h-3 rounded-full 
+            ${attendance.clockedIn ? 'bg-green-400' : 'bg-gray-400'}
+          `}></div>
+          <span className="text-sm text-gray-400">
+            {attendance.clockedIn ? 'Active' : 'Not clocked in'}
+          </span>
+        </div>
+      </div>
 
-      <div className="p-6 space-y-6">
-        {/* Time Display and Status */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <TimeDisplay />
-          </div>
+      {/* Current Time & Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-1">
+          <TimeDisplay />
+        </div>
+        <div className="lg:col-span-2">
           <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">Current Status</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-400">Status:</span>
-                <span className={`px-3 py-1 rounded-full text-sm ${
-                  attendance.clockedIn 
-                    ? attendance.onBreak 
-                      ? 'bg-yellow-600 text-white' 
-                      : 'bg-green-600 text-white'
-                    : 'bg-red-600 text-white'
-                }`}>
-                  {attendance.clockedIn 
-                    ? attendance.onBreak 
-                      ? 'On Break' 
-                      : 'Working'
-                    : 'Clocked Out'}
-                </span>
-              </div>
-              {attendance.clockInTime && (
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-400">Clock In:</span>
-                  <span className="text-white">
-                    {attendance.clockInTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((stat, index) => (
-            <StatsCard key={index} {...stat} />
-          ))}
-        </div>
-
-        {/* Quick Actions and Activity Feed */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1">
-            <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                {!attendance.clockedIn ? (
-                  <QuickActionButton
-                    icon={LogIn}
-                    label="Clock In"
-                    onClick={handleClockIn}
-                    variant="success"
-                  />
-                ) : (
-                  <>
-                    <QuickActionButton
-                      icon={LogOut}
-                      label="Clock Out"
-                      onClick={handleClockOut}
-                      variant="danger"
-                    />
-                    <QuickActionButton
-                      icon={attendance.onBreak ? Play : Pause}
-                      label={attendance.onBreak ? "End Break" : "Start Break"}
-                      onClick={handleBreakToggle}
-                      variant="warning"
-                    />
-                  </>
-                )}
+            <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {!attendance.clockedIn ? (
                 <QuickActionButton
-                  icon={BarChart3}
-                  label="View Reports"
-                  onClick={() => alert('Reports feature coming soon!')}
-                  variant="secondary"
+                  icon={LogIn}
+                  label="Clock In"
+                  onClick={handleClockIn}
+                  variant="success"
                 />
-              </div>
+              ) : (
+                <QuickActionButton
+                  icon={LogOut}
+                  label="Clock Out"
+                  onClick={handleClockOut}
+                  variant="danger"
+                />
+              )}
+              
+              <QuickActionButton
+                icon={attendance.onBreak ? Play : Pause}
+                label={attendance.onBreak ? 'End Break' : 'Start Break'}
+                onClick={handleBreakToggle}
+                variant={attendance.onBreak ? 'success' : 'warning'}
+                disabled={!attendance.clockedIn}
+              />
             </div>
-          </div>
-          
-          <div className="lg:col-span-2">
-            <ActivityFeed activities={activities} />
+            
+            {attendance.clockedIn && (
+              <div className="mt-4 p-4 bg-gray-800 rounded-lg">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400">Clocked in at:</span>
+                  <span className="text-white font-medium">{attendance.clockInTime}</span>
+                </div>
+                {attendance.onBreak && (
+                  <div className="flex items-center justify-between text-sm mt-2">
+                    <span className="text-gray-400">Break started:</span>
+                    <span className="text-yellow-400 font-medium">{attendance.breakStartTime}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Weekly Schedule */}
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {employeeStats.map((stat, index) => (
+          <StatsCard key={index} {...stat} />
+        ))}
+      </div>
+
+      {/* Activity Feed */}
+      <ActivityFeed activities={recentActivities} />
+    </div>
+  );
+};
+
+// Admin Dashboard
+const AdminDashboard = () => {
+  const adminStats = [
+    { 
+      icon: Users, 
+      title: 'Total Employees', 
+      value: '156', 
+      subtitle: 'Active users',
+      color: 'blue',
+      trend: { positive: true, value: '+12' }
+    },
+    { 
+      icon: CheckCircle, 
+      title: 'Present Today', 
+      value: '142', 
+      subtitle: '91% attendance',
+      color: 'green',
+      trend: { positive: true, value: '+5%' }
+    },
+    { 
+      icon: XCircle, 
+      title: 'Absent Today', 
+      value: '8', 
+      subtitle: '5% of total',
+      color: 'red',
+      trend: { positive: false, value: '-2' }
+    },
+    { 
+      icon: Clock, 
+      title: 'Late Arrivals', 
+      value: '6', 
+      subtitle: 'Today',
+      color: 'yellow',
+      trend: { positive: false, value: '+3' }
+    }
+  ];
+
+  const departmentStats = [
+    { name: 'IT', present: 45, total: 50, percentage: 90 },
+    { name: 'HR', present: 12, total: 15, percentage: 80 },
+    { name: 'Finance', present: 25, total: 28, percentage: 89 },
+    { name: 'Marketing', present: 20, total: 22, percentage: 91 },
+    { name: 'Operations', present: 40, total: 41, percentage: 98 }
+  ];
+
+  const recentActivities = [
+    { type: 'clock-in', message: 'John Doe clocked in', time: '5 minutes ago' },
+    { type: 'clock-out', message: 'Jane Smith clocked out', time: '10 minutes ago' },
+    { type: 'other', message: 'New employee Mike Johnson added', time: '1 hour ago' },
+    { type: 'break', message: 'Sarah Wilson started break', time: '1 hour ago' },
+    { type: 'clock-in', message: 'David Brown clocked in late', time: '2 hours ago' }
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
+          <p className="text-gray-400">Monitor attendance and manage your workforce</p>
+        </div>
+        <div className="flex items-center space-x-3">
+          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+            Generate Report
+          </button>
+          <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
+            Export Data
+          </button>
+        </div>
+      </div>
+
+      {/* Stats Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {adminStats.map((stat, index) => (
+          <StatsCard key={index} {...stat} />
+        ))}
+      </div>
+
+      {/* Department Overview & Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Department Stats */}
         <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-4">This Week's Schedule</h3>
-          <div className="grid grid-cols-2 md:grid-cols-7 gap-4">
-            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
-              <div key={day} className="text-center">
-                <div className="text-sm text-gray-400 mb-1">{day}</div>
-                <div className={`
-                  w-full h-20 rounded-lg flex flex-col items-center justify-center text-sm
-                  ${index < 5 ? 'bg-blue-600' : 'bg-gray-700'}
-                `}>
-                  {index < 5 ? (
-                    <>
-                      <div className="font-semibold">8:00 - 17:00</div>
-                      <div className="text-xs">8 hours</div>
-                    </>
-                  ) : (
-                    <div className="text-gray-400">Rest Day</div>
-                  )}
+          <h3 className="text-lg font-semibold text-white mb-4">Department Overview</h3>
+          <div className="space-y-4">
+            {departmentStats.map((dept, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Building2 className="text-gray-400" size={20} />
+                  <span className="text-white font-medium">{dept.name}</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <span className="text-sm text-gray-400">
+                    {dept.present}/{dept.total}
+                  </span>
+                  <div className="w-20 bg-gray-700 rounded-full h-2">
+                    <div 
+                      className={`
+                        h-2 rounded-full
+                        ${dept.percentage >= 90 ? 'bg-green-500' : 
+                          dept.percentage >= 80 ? 'bg-yellow-500' : 'bg-red-500'}
+                      `}
+                      style={{ width: `${dept.percentage}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm text-white font-medium w-10">
+                    {dept.percentage}%
+                  </span>
                 </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Quick Actions */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
+          <div className="space-y-3">
+            <QuickActionButton
+              icon={Users}
+              label="Manage Employees"
+              variant="primary"
+            />
+            <QuickActionButton
+              icon={Building2}
+              label="Manage Departments"
+              variant="secondary"
+            />
+            <QuickActionButton
+              icon={BarChart3}
+              label="View Reports"
+              variant="secondary"
+            />
+            <QuickActionButton
+              icon={AlertCircle}
+              label="Review Alerts"
+              variant="warning"
+            />
+          </div>
+        </div>
       </div>
+
+      {/* Recent Activity */}
+      <ActivityFeed activities={recentActivities} />
     </div>
   );
 };
 
-export default EmployeeDashboard;
+// Main Dashboard Component (switches between employee and admin)
+const Dashboard = () => {
+
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  return user.role === 'admin' ? <AdminDashboard /> : <EmployeeDashboard />;
+};
+
+export default Dashboard;
