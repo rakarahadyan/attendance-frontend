@@ -58,8 +58,9 @@ const Sidebar = ({ isOpen, onClose }) => {
           {/* Logo */}
           <div className="flex items-center justify-between p-4 border-b border-gray-700">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Clock size={20} className="text-white" />
+              <div className="rounded-lg flex items-center justify-center bg-white w-8 h-8">
+                {/* <Clock size={20} className="text-white" /> */}
+                <img src="/attendance.png" alt="Logo" className="" />
               </div>
               <span className="text-xl font-bold text-white">
                 AttendanceApp

@@ -15,6 +15,7 @@ import {
   Search,
   ChevronDown,
 } from "lucide-react";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 // Header Component
 const Header = ({
@@ -22,6 +23,7 @@ const Header = ({
   user = { name: "John Doe", role: "Admin" },
 }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = (e) => {
@@ -111,7 +113,7 @@ const Header = ({
                 <hr className="border-gray-700 my-1" />
                 <a
                   href="#"
-                  onClick={handleLogout}
+                  onClick={() => setShowDialog(true)}
                   className="flex items-center px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-gray-700 transition-colors"
                 >
                   <LogOut size={16} className="mr-3" />
@@ -120,6 +122,16 @@ const Header = ({
               </div>
             )}
           </div>
+
+          <ConfirmationDialog
+            isOpen={showDialog}
+            title="Logout Confirmation"
+            description="Are you sure you want to logout?"
+            onCancel={() => setShowDialog(false)}
+            onConfirm={handleLogout}
+            confirmText="Logout"
+            cancelText="Cancel"
+          />
         </div>
       </div>
     </header>
