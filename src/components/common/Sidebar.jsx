@@ -24,7 +24,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   const menuItems = [
-    { id: "dashboard", label: "Dashboard", icon: Home, href: "/" },
+    { id: "dashboard", label: "Dashboard", icon: Home, href: "/dashboard" },
     { id: "attendance", label: "Attendance", icon: Clock, href: "/attendance" },
     { id: "employees", label: "Employees", icon: Users, href: "/employees" },
     {

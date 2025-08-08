@@ -113,7 +113,7 @@ const LoginForm = () => {
 
       // axios to send formData to the server
       axios
-        .post("http://localhost:8000/api/auth/login", formData)
+        .post("http://103.235.75.135/api/auth/login", formData)
         .then((response) => {
           // Handle successful login
           localStorage.setItem("token", response.data.token);
@@ -229,8 +229,9 @@ const LoginPage = () => {
         <div className="w-full max-w-md space-y-8">
           {/* Logo and Header */}
           <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-6">
-              <Clock className="text-white" size={32} />
+            <div className="mx-auto w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6">
+              {/* <Clock className="text-white" size={32} /> */}
+              <img src="/attendance.png" alt="Logo" className="" />
             </div>
             <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
             <p className="text-gray-400">Sign in to your attendance account</p>
@@ -240,7 +241,7 @@ const LoginPage = () => {
           <LoginForm />
 
           {/* Demo Credentials */}
-          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          {/* <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
             <h4 className="text-sm font-medium text-gray-300 mb-2">
               Demo Credentials:
             </h4>
@@ -248,7 +249,7 @@ const LoginPage = () => {
               <div>Admin: admin@company.com / password</div>
               <div>Employee: john@company.com / password</div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
