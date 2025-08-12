@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Eye, EyeOff, Clock, User, Lock, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import attendanceLogo from "@/assets/attendance.png";
 
 // Input Field Component
 const InputField = ({
@@ -113,7 +114,7 @@ const LoginForm = () => {
 
       // axios to send formData to the server
       axios
-        .post("http://103.235.75.135/api/auth/login", formData)
+        .post("https://rahadyanhnd.my.id/attendance-backend/api/auth/login", formData)
         .then((response) => {
           // Handle successful login
           localStorage.setItem("token", response.data.token);
@@ -231,7 +232,7 @@ const LoginPage = () => {
           <div className="text-center">
             <div className="mx-auto w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6">
               {/* <Clock className="text-white" size={32} /> */}
-              <img src="/attendance.png" alt="Logo" className="" />
+              <img src={attendanceLogo} alt="Logo" className="" />
             </div>
             <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
             <p className="text-gray-400">Sign in to your attendance account</p>

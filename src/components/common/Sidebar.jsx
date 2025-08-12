@@ -15,6 +15,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import attendanceLogo from "@/assets/attendance.png";
 
 // Sidebar Component
 const Sidebar = ({ isOpen, onClose }) => {
@@ -60,7 +61,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className="flex items-center space-x-3">
               <div className="rounded-lg flex items-center justify-center bg-white w-8 h-8">
                 {/* <Clock size={20} className="text-white" /> */}
-                <img src="/attendance.png" alt="Logo" className="" />
+                <img src={attendanceLogo} alt="Logo" className="" />
               </div>
               <span className="text-xl font-bold text-white">
                 AttendanceApp
