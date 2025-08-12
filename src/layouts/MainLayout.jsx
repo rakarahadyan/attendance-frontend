@@ -1,19 +1,4 @@
 import { useState } from "react";
-import {
-  Menu,
-  X,
-  Home,
-  Users,
-  Building2,
-  Clock,
-  BarChart3,
-  Settings,
-  LogOut,
-  User,
-  Bell,
-  Search,
-  ChevronDown,
-} from "lucide-react";
 import Header from "../components/common/Header";
 import Sidebar from "../components/common/Sidebar";
 import { Outlet } from "react-router-dom";
